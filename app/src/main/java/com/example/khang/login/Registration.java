@@ -1,5 +1,6 @@
 package com.example.khang.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Objects;
 
 public class Registration extends AppCompatActivity {
-    private EditText mEmail, mPassword;
+    private EditText mREmail, mRPassword;
     private Button mSignup;
     private FirebaseAuth mAuth;
 
@@ -26,17 +27,18 @@ public class Registration extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        mEmail = findViewById(R.id.signup_input_email);
-        mPassword = findViewById(R.id.signup_input_layout_name);
+        mREmail = findViewById(R.id.signup_input_email);
+        mRPassword = findViewById(R.id.signup_input_password);
         mSignup = findViewById(R.id.btn_signup);
         mAuth = FirebaseAuth.getInstance();
         mSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                final String email = mEmail.getText().toString();
-                final String password = mPassword.getText().toString();
+                Intent intent=new Intent(Registration.this, DriverLoginActivity.class);
+                startActivity(intent);
+                finish();
+                final String email = mREmail.getText().toString();
+                final String password = mRPassword.getText().toString();
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(Registration.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -46,7 +48,9 @@ public class Registration extends AppCompatActivity {
                             String user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
                             DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(user_id);
                             current_user_db.setValue(true);
+                            Toast.makeText(Registration.this, "Sign Up Success", Toast.LENGTH_SHORT).show();
                         }
+
                    }
 
                 });
